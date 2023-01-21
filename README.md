@@ -18,7 +18,7 @@ go mod tidy
 go run main.go
 ```
 
-# What can this bot dd?
+# What can this bot do?
 
 - This bot display the current ladder sorted of the team like so:
 
@@ -26,8 +26,12 @@ go run main.go
 @ChallengeMatchBot ladder
 ```
 
+![ladder image](./screenshots/ladder.png)
+
 - This bot can also update the ladder of challenge matches:
 
 ```
 @ChallengeMatchBot match <player1> beats <player2>
 ```
+
+![match image](./screenshots/match%20input.png)
