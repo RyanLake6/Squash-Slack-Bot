@@ -49,10 +49,6 @@ func main() {
 		fmt.Println("Connected to sql!")
 
 
-		
-	os.Setenv("SLACK_BOT_TOKEN", "xoxb-2508506974611-4670506623526-bVwbHE4JMqGZEe1YJIIJBNLT")
-	os.Setenv("SLACK_APP_TOKEN", "xapp-1-A04KX15BQQ2-4670477208886-3768b06866380f8b4857b785a1004a548e31faf5dbe1deed979ed8b3a1a0ba65")
-
 	bot := slacker.NewClient(os.Getenv("SLACK_BOT_TOKEN"), os.Getenv("SLACK_APP_TOKEN"))
 
 	go printCommandEvents(bot.CommandEvents())
