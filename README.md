@@ -42,4 +42,4 @@ go run main.go
 @ChallengeMatchBot last matches <playerName>
 ```
 
-This currently has a time bug reading from sql
+![recent matches](./screenshots/recent%20matches.png)
