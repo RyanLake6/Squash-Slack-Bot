@@ -30,6 +30,7 @@ func main() {
 		godotenv.Load()
 	    // Capture connection properties.
 		cfg := mysql.Config{
+			ParseTime: true,
 			User:   os.Getenv("DBUSER"),
 			Passwd: os.Getenv("DBPASS"),
 			Net:    "tcp",
@@ -163,7 +164,7 @@ func main() {
 				} else {
 					upOrDown = "DOWN"
 				}			  
-
+				
 				date := pastmatches[i].date.Month().String() + "-" + strconv.Itoa(pastmatches[i].date.Day()) + "-" + strconv.Itoa(pastmatches[i].date.Year())
 				// Building the final output
 				temp = temp + "#" + strconv.Itoa(i + 1) + " Against " + otherPlayer + " you played " + upOrDown + " and " + whoWon + " on " + date + "\n"
