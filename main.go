@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
@@ -105,28 +106,77 @@ func main() {
 			// response.Reply(strconv.Itoa(int(player1Position)) + strconv.Itoa(int(player2Position)) + player1Name + player2Name)
 			if (int(player1Position) == int(player2Position) - 1 && int(player1Position) < int(player2Position)) {
 				response.Reply("Great job " + player1Name + "! \nThe ladder won't change")
+				recordMatch(1, player1Name, player2Name, int(player1Position), int(player2Position))
 			} else if (int(player1Position) == int(player2Position) + 1 && player1Position > player2Position) {
 				response.Reply("Great job " + player1Name + "! \nThe ladder will be affected")
 				updateLadder(player1Name, int(player1Position), player2Name, int(player2Position))
+				recordMatch(2, player1Name, player2Name, int(player1Position), int(player2Position))
 			} else {
 				response.Reply("uh oh I can't support players beating eachother not next to eachother in the ladder :(")
 			}
 		},
 	})
 
-	// bot.Command("randomly select someone", &slacker.CommandDefinition{
-	// 	Handler: func(botCtx slacker.BotContext, request slacker.Request, response slacker.ResponseWriter) {
-	// 		rows, _ := db.Query("SELECT firsName from rankings ORDER by RAND() LIMIT 1")
-	// 		player := []Player{}
-	// 		defer rows.Close()
-	// 		for rows.Next() {
-	// 			var p Player
-	// 			rows.Scan(&p.position, &p.firstName)
-	// 			player = append(player, p)
-	// 		}
-	// 		response.Reply(player[0].firstName + " you have been selected")
-	// 	},
-	// })
+	type PastMatch struct {
+		player1 string
+		player2 string
+		winner int
+		player1PrevPos int
+		player2PrevPos int
+		date time.Time
+	}
+	bot.Command("last matches <playerName>", &slacker.CommandDefinition{
+		Handler: func(botCtx slacker.BotContext, request slacker.Request, response slacker.ResponseWriter) {
+			playerName := request.Param("playerName")
+
+			rows, _ := db.Query("SELECT * from pastmatches WHERE player1='" + playerName + "' OR " + "player2='" + playerName + "'")
+			pastmatches := []PastMatch{}
+			defer rows.Close()
+			for rows.Next() {
+				var pm PastMatch
+				rows.Scan(&pm.player1, &pm.player2, &pm.winner, &pm.player1PrevPos, &pm.player2PrevPos, &pm.date)
+				pastmatches = append(pastmatches, pm)
+			}
+
+			// building the response
+			temp := ""
+			for i := 0; i < len(pastmatches); i++ {
+				// Finding who is the other player
+				var otherPlayer string
+				if (playerName == pastmatches[i].player1) {
+					otherPlayer = pastmatches[i].player2
+				} else {
+					otherPlayer = pastmatches[i].player1
+				}
+				// Finding if the player who was called on won or lost
+				var whoWon string
+				if (pastmatches[i].winner == 1 && pastmatches[i].player1 == playerName) {
+					whoWon = "WON"
+				} else {
+					whoWon = "LOST"
+				}
+				// Finding if the player who was called on played up or down
+				var upOrDown string
+				if (pastmatches[i].player1 == playerName && pastmatches[i].player1PrevPos > pastmatches[i].player2PrevPos ||
+					pastmatches[i].player2 == playerName && pastmatches[i].player1PrevPos < pastmatches[i].player2PrevPos) {
+					upOrDown = "UP"
+				} else {
+					upOrDown = "DOWN"
+				}			  
+
+				date := pastmatches[i].date.Month().String() + "-" + strconv.Itoa(pastmatches[i].date.Day()) + "-" + strconv.Itoa(pastmatches[i].date.Year())
+				// Building the final output
+				temp = temp + "#" + strconv.Itoa(i + 1) + " Against " + otherPlayer + " you played " + upOrDown + " and " + whoWon + " on " + date + "\n"
+			}
+
+			// Sending reponse if there is/isnt matches associated with the player
+			if (len(temp) == 0) {
+				response.Reply("Sorry, you don't have any stored matches")
+			} else {
+				response.Reply(temp)
+			}
+		},
+	})
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -149,5 +199,19 @@ func updateLadder(winner string, winnersOldPosition int, loser string, losersOld
 		panic(err)
 	}
 	fmt.Println("Updated ladder!")
+}
+
+// records the match in the pastmatches table
+func recordMatch(winner int, player1 string, player2 string, player1PrevPos int, player2PrevPos int) {
+	player1Temp := "'" + player1 + "', "
+	player2Temp := "'" + player2 + "', "
+	winnerTemp := "'" + strconv.Itoa(winner) + "', "
+	player1PrevPosTemp := "'" + strconv.Itoa(player1PrevPos) + "', "
+	player2PrevPosTemp := "'" + strconv.Itoa(player2PrevPos) + "', "
+	currentTime := "'" + time.Now().Format(time.RFC3339) + "'"
+	_, err := db.Exec("INSERT INTO pastmatches VALUES (" + player1Temp + player2Temp + winnerTemp + player1PrevPosTemp + player2PrevPosTemp + currentTime + ")")
+	if err != nil {
+		panic(err)
+	}
 }
 
