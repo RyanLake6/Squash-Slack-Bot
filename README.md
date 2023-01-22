@@ -35,3 +35,7 @@ go run main.go
 ```
 
 ![match image](./screenshots/match%20input.png)
+
+- This bot can fetch all the players previous matches played:
+
+This currently has a time bug reading from sql

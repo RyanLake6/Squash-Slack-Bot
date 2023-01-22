@@ -105,10 +105,10 @@ func main() {
 			player2Name := players2[0].firstName
 			// response.Reply(strconv.Itoa(int(player1Position)) + strconv.Itoa(int(player2Position)) + player1Name + player2Name)
 			if (int(player1Position) == int(player2Position) - 1 && int(player1Position) < int(player2Position)) {
-				response.Reply("Great job " + player1Name + "! \nThe ladder won't change")
+				response.Reply("Great job " + player1Name + "! \nThe ladder won't change and this match has been recorded")
 				recordMatch(1, player1Name, player2Name, int(player1Position), int(player2Position))
 			} else if (int(player1Position) == int(player2Position) + 1 && player1Position > player2Position) {
-				response.Reply("Great job " + player1Name + "! \nThe ladder will be affected")
+				response.Reply("Great job " + player1Name + "! \nThe ladder will be affected and this match has been recorded")
 				updateLadder(player1Name, int(player1Position), player2Name, int(player2Position))
 				recordMatch(2, player1Name, player2Name, int(player1Position), int(player2Position))
 			} else {
