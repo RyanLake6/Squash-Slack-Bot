@@ -40,6 +40,6 @@ go run main.go
 
 ```
 @ChallengeMatchBot last matches <playerName>
+```
 
 This currently has a time bug reading from sql
-```
