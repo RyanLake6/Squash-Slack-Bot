@@ -38,4 +38,8 @@ go run main.go
 
 - This bot can fetch all the players previous matches played:
 
+```
+@ChallengeMatchBot last matches <playerName>
+
 This currently has a time bug reading from sql
+```
