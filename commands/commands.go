@@ -28,6 +28,9 @@ type Client struct {
 
 // Main function to create all the bot.commands 
 func (c *Client) CreateCommands() {
+	// display incoming commands within terminal (debugging)
+	go printCommandEvents(c.Bot.CommandEvents())
+
 	// outputs the ladder
 	c.GetLadder()
 
