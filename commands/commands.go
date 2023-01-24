@@ -1,43 +1,24 @@
 package commands
 
 import (
-	"database/sql"
-	"time"
-
-	"github.com/shomali11/slacker"
+	commandfunctions "github.com/ryanlake6/squash-slack-bot/commands/listeners"
 )
 
-type Player struct {
-	Position  int64
-	FirstName string
-}
-
-type PastMatch struct {
-	Player1 string
-	Player2 string
-	Winner int
-	Player1PrevPos int
-	Player2PrevPos int
-	Date time.Time
-}
-
 type Client struct {
-	Database *sql.DB
-	Bot *slacker.Slacker
+	CommandEvents *commandfunctions.Client
 }
 
 // Main function to create all the bot.commands 
 func (c *Client) CreateCommands() {
 	// display incoming commands within terminal (debugging)
-	go printCommandEvents(c.Bot.CommandEvents())
+	go c.CommandEvents.PrintCommandEvents(c.CommandEvents.Bot.CommandEvents())
 
 	// outputs the ladder
-	c.GetLadder()
+	c.CommandEvents.GetLadder()
 
 	// allows to input match into system
-	c.inputMatch()
+	c.CommandEvents.InputMatch()
 
-	c.getLastMatches()
-
-
+	// Gets last matches of the player
+	c.CommandEvents.GetLastMatches()
 }

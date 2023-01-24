@@ -1,4 +1,4 @@
-package commands
+package listeners
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 	"github.com/shomali11/slacker"
 )
 
-func (c *Client) inputMatch() {
+func (c *Client) InputMatch() {
 	c.Bot.Command("match <player1> beats <player2>", &slacker.CommandDefinition{
 		Handler: func(botCtx slacker.BotContext, request slacker.Request, response slacker.ResponseWriter) {
 			player1 := request.Param("player1")

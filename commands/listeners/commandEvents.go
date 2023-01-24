@@ -1,4 +1,4 @@
-package commands
+package listeners
 
 import (
 	"fmt"
@@ -6,7 +6,7 @@ import (
 	"github.com/shomali11/slacker"
 )
 
-func printCommandEvents(analyticsChannel <-chan *slacker.CommandEvent) {
+func (c *Client) PrintCommandEvents(analyticsChannel <-chan *slacker.CommandEvent) {
 	for event := range analyticsChannel {
 		fmt.Println("Command Events")
 		fmt.Println(event.Timestamp)

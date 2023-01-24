@@ -18,28 +18,6 @@ go mod tidy
 go run main.go
 ```
 
-# What can this bot do?
+# Want to know how to use this bot?
 
-- This bot display the current ladder sorted of the team like so:
-
-```
-@ChallengeMatchBot ladder
-```
-
-![ladder image](./screenshots/ladder.png)
-
-- This bot can also update the ladder of challenge matches:
-
-```
-@ChallengeMatchBot match <player1> beats <player2>
-```
-
-![match image](./screenshots/match%20input.png)
-
-- This bot can fetch all the players previous matches played:
-
-```
-@ChallengeMatchBot last matches <playerName>
-```
-
-![recent matches](./screenshots/recent%20matches.png)
+- See here: ![commands list](./commands/README.md)

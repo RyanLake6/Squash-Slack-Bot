@@ -1,4 +1,4 @@
-package commands
+package listeners
 
 import (
 	"strconv"
@@ -6,7 +6,7 @@ import (
 	"github.com/shomali11/slacker"
 )
 
-func (c *Client) getLastMatches() {
+func (c *Client) GetLastMatches() {
 	c.Bot.Command("last matches <playerName>", &slacker.CommandDefinition{
 		Handler: func(botCtx slacker.BotContext, request slacker.Request, response slacker.ResponseWriter) {
 			playerName := request.Param("playerName")
