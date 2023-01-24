@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"time"
 
+	t "github.com/ryanlake6/squash-slack-bot/types"
 	"github.com/shomali11/slacker"
 )
 
@@ -15,19 +16,19 @@ func (c *Client) InputMatch() {
 			player2 := request.Param("player2")
 
 			rows, _ := c.Database.Query("SELECT * FROM rankings WHERE firstName='" + player1 + "'")
-			players1 := []Player{}
+			players1 := []t.Player{}
 			defer rows.Close()
 			for rows.Next() {
-				var p Player
+				var p t.Player
 				rows.Scan(&p.Position, &p.FirstName)
 				players1 = append(players1, p)
 			}
 
 			rows, _ = c.Database.Query("SELECT * FROM rankings WHERE firstName='" + player2 + "'")
 			defer rows.Close()
-			players2 := []Player{}
+			players2 := []t.Player{}
 			for rows.Next() {
-				var p Player
+				var p t.Player
 				rows.Scan(&p.Position, &p.FirstName)
 				players2 = append(players2, p)
 			}
@@ -35,7 +36,6 @@ func (c *Client) InputMatch() {
 			player2Position := players2[0].Position
 			player1Name := players1[0].FirstName
 			player2Name := players2[0].FirstName
-			// response.Reply(strconv.Itoa(int(player1Position)) + strconv.Itoa(int(player2Position)) + player1Name + player2Name)
 			if int(player1Position) == int(player2Position)-1 && int(player1Position) < int(player2Position) {
 				response.Reply("Great job " + player1Name + "! \nThe ladder won't change and this match has been recorded")
 				c.recordMatch(1, player1Name, player2Name, int(player1Position), int(player2Position))

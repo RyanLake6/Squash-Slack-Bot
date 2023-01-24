@@ -3,8 +3,8 @@ package listeners
 import (
 	"database/sql"
 	"strconv"
-	"time"
 
+	t "github.com/ryanlake6/squash-slack-bot/types"
 	"github.com/shomali11/slacker"
 )
 
@@ -13,28 +13,14 @@ type Client struct {
 	Bot *slacker.Slacker
 }
 
-type Player struct {
-	Position  int64
-	FirstName string
-}
-
-type PastMatch struct {
-	Player1 string
-	Player2 string
-	Winner int
-	Player1PrevPos int
-	Player2PrevPos int
-	Date time.Time
-}
-
 func (c *Client) GetLadder() {
 	c.Bot.Command("ladder", &slacker.CommandDefinition{
 		Handler: func(botCtx slacker.BotContext, request slacker.Request, response slacker.ResponseWriter) {
 			rows, _ := c.Database.Query("SELECT * from rankings ORDER BY position ASC")
-			players := []Player{}
+			players := []t.Player{}
 			defer rows.Close()
 			for rows.Next() {
-				var p Player
+				var p t.Player
 				rows.Scan(&p.Position, &p.FirstName)
 				players = append(players, p)
 			}

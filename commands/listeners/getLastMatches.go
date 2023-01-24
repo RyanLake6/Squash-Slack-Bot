@@ -3,6 +3,7 @@ package listeners
 import (
 	"strconv"
 
+	t "github.com/ryanlake6/squash-slack-bot/types"
 	"github.com/shomali11/slacker"
 )
 
@@ -12,10 +13,10 @@ func (c *Client) GetLastMatches() {
 			playerName := request.Param("playerName")
 
 			rows, _ := c.Database.Query("SELECT * from pastmatches WHERE player1='" + playerName + "' OR " + "player2='" + playerName + "'")
-			pastmatches := []PastMatch{}
+			pastmatches := []t.PastMatch{}
 			defer rows.Close()
 			for rows.Next() {
-				var pm PastMatch
+				var pm t.PastMatch
 				rows.Scan(&pm.Player1, &pm.Player2, &pm.Winner, &pm.Player1PrevPos, &pm.Player2PrevPos, &pm.Date)
 				pastmatches = append(pastmatches, pm)
 			}
