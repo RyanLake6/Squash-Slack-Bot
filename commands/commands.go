@@ -21,4 +21,7 @@ func (c *Client) CreateCommands() {
 
 	// Gets last matches of the player
 	c.CommandEvents.GetLastMatches()
+
+	// Find next match player should play
+	c.CommandEvents.FindNextMatch()
 }

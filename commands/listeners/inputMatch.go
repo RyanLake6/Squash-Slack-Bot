@@ -15,27 +15,12 @@ func (c *Client) InputMatch() {
 			player1 := request.Param("player1")
 			player2 := request.Param("player2")
 
-			rows, _ := c.Database.Query("SELECT * FROM rankings WHERE firstName='" + player1 + "'")
-			players1 := []t.Player{}
-			defer rows.Close()
-			for rows.Next() {
-				var p t.Player
-				rows.Scan(&p.Position, &p.FirstName)
-				players1 = append(players1, p)
-			}
+			player1Ranking, player2Ranking := c.getPlayersRankings(player1, player2)
 
-			rows, _ = c.Database.Query("SELECT * FROM rankings WHERE firstName='" + player2 + "'")
-			defer rows.Close()
-			players2 := []t.Player{}
-			for rows.Next() {
-				var p t.Player
-				rows.Scan(&p.Position, &p.FirstName)
-				players2 = append(players2, p)
-			}
-			player1Position := players1[0].Position
-			player2Position := players2[0].Position
-			player1Name := players1[0].FirstName
-			player2Name := players2[0].FirstName
+			player1Position := player1Ranking.Position
+			player2Position := player2Ranking.Position
+			player1Name := player1Ranking.FirstName
+			player2Name := player2Ranking.FirstName
 			if int(player1Position) == int(player2Position)-1 && int(player1Position) < int(player2Position) {
 				response.Reply("Great job " + player1Name + "! \nThe ladder won't change and this match has been recorded")
 				c.recordMatch(1, player1Name, player2Name, int(player1Position), int(player2Position))
@@ -50,6 +35,28 @@ func (c *Client) InputMatch() {
 	})
 }
 
+
+func (c *Client) getPlayersRankings(player1 string, player2 string) (t.Player, t.Player) {
+	rows, _ := c.Database.Query("SELECT * FROM rankings WHERE firstName='" + player1 + "'")
+	players1 := []t.Player{}
+	defer rows.Close()
+	for rows.Next() {
+		var p t.Player
+		rows.Scan(&p.Position, &p.FirstName)
+		players1 = append(players1, p)
+	}
+
+	rows, _ = c.Database.Query("SELECT * FROM rankings WHERE firstName='" + player2 + "'")
+	defer rows.Close()
+	players2 := []t.Player{}
+	for rows.Next() {
+		var p t.Player
+		rows.Scan(&p.Position, &p.FirstName)
+		players2 = append(players2, p)
+	}
+
+	return players1[0], players2[0]
+}
 
 // records the match in the pastmatches table
 func (c *Client) recordMatch(winner int, player1 string, player2 string, player1PrevPos int, player2PrevPos int) {

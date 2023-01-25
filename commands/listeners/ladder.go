@@ -16,14 +16,8 @@ type Client struct {
 func (c *Client) GetLadder() {
 	c.Bot.Command("ladder", &slacker.CommandDefinition{
 		Handler: func(botCtx slacker.BotContext, request slacker.Request, response slacker.ResponseWriter) {
-			rows, _ := c.Database.Query("SELECT * from rankings ORDER BY position ASC")
-			players := []t.Player{}
-			defer rows.Close()
-			for rows.Next() {
-				var p t.Player
-				rows.Scan(&p.Position, &p.FirstName)
-				players = append(players, p)
-			}
+			players := c.retreiveLadderFromDatabase()
+			
 			temp := ""
 			for i := 0; i < len(players); i++ {
 				temp = temp + "#" + strconv.FormatInt(players[i].Position, 10) + " " + players[i].FirstName + "\n"
@@ -31,4 +25,17 @@ func (c *Client) GetLadder() {
 			response.Reply(temp)
 		},
 	})
+}
+
+func (c *Client) retreiveLadderFromDatabase() []t.Player {
+	rows, _ := c.Database.Query("SELECT * from rankings ORDER BY position ASC")
+	players := []t.Player{}
+	defer rows.Close()
+	for rows.Next() {
+		var p t.Player
+		rows.Scan(&p.Position, &p.FirstName)
+		players = append(players, p)
+	}
+
+	return players
 }
