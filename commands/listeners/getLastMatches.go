@@ -4,7 +4,6 @@ import (
 	"strconv"
 	"strings"
 
-	t "github.com/ryanlake6/squash-slack-bot/types"
 	"github.com/shomali11/slacker"
 )
 
@@ -13,7 +12,7 @@ func (c *Client) GetLastMatches() {
 		Handler: func(botCtx slacker.BotContext, request slacker.Request, response slacker.ResponseWriter) {
 			playerName := strings.ToLower(request.Param("playerName"))
 
-			pastmatches := c.getPastMatches(playerName)		
+			pastmatches := c.Database.GetPastMatches(playerName)		
 
 			// building the response
 			temp := ""
@@ -56,16 +55,4 @@ func (c *Client) GetLastMatches() {
 	})
 }
 
-// Gets all the past matches of the player given
-func (c *Client) getPastMatches(playerName string) []t.PastMatch {
-	rows, _ := c.Database.Query("SELECT * from pastmatches WHERE player1='" + playerName + "' OR " + "player2='" + playerName + "'")
-	pastmatches := []t.PastMatch{}
-	defer rows.Close()
-	for rows.Next() {
-		var pm t.PastMatch
-		rows.Scan(&pm.Player1, &pm.Player2, &pm.Winner, &pm.Player1PrevPos, &pm.Player2PrevPos, &pm.Date)
-		pastmatches = append(pastmatches, pm)
-	}
 
-	return pastmatches
-}

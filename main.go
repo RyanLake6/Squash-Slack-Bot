@@ -19,7 +19,9 @@ func main() {
 	bot := slacker.NewClient(os.Getenv("SLACK_BOT_TOKEN"), os.Getenv("SLACK_APP_TOKEN"))
 
 	// Creating all the bot commands
-	c := &commands.Client{CommandEvents: &listeners.Client{Database: db, Bot: bot}}
+	database := &database.Database{Database: db}
+	listeners := &listeners.Client{Bot: bot, Database: database}
+	c := &commands.Client{CommandEvents: listeners}
 	c.CreateCommands()
 
 	// When program gets cancelled at terminal or any other reason (shuts down the bot)
