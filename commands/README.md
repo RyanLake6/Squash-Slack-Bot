@@ -24,6 +24,14 @@
 
 ![recent matches](../screenshots/recent%20matches.png)
 
+- This bot can find out who you should play next based off previous matches:
+
+```
+@ChallengeMatchBot next match <playerName>
+```
+
+![next match](../screenshots/next%20match.png)
+
 - If you are ever confused use the following command to see syntax and other commands within slack
 
 ```
