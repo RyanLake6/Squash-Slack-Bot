@@ -59,11 +59,16 @@ func (d *Database) GetPlayerRanking(playerName string) (t.Player, error) {
 	return players[0], nil
 }
 
-func (d *Database) GetPlayerBasedOnRanking(rankingNumber int) (t.Player, error) {
+func (d *Database) GetPlayerBasedOnRanking(rankingNumber int) (t.Player, string, error) {
 	// Checking if player is at top or bottom of ladder
 	ladder := d.RetreiveLadderFromDatabase()
-	if (rankingNumber == 0 || len(ladder) < rankingNumber) {
-		return *&t.Player{}, fmt.Errorf("You are top or bottom of the ladder and thus can only play one direction")
+	edgeCaseRanking := ""
+	if (rankingNumber == 0) {
+		rankingNumber += 2
+		edgeCaseRanking = "Since you are number 1 you always will always play DOWN against "
+	} else if (rankingNumber > len(ladder)) {
+		rankingNumber -= 2
+		edgeCaseRanking = "Since you are at the bottom of the ladder you always will play UP against " 
 	}
 
 	rows, _ := d.Database.Query("SELECT * FROM rankings WHERE position=" + strconv.Itoa(rankingNumber))
@@ -75,9 +80,9 @@ func (d *Database) GetPlayerBasedOnRanking(rankingNumber int) (t.Player, error) 
 		players = append(players, p)
 	}
 	if (len(players) == 0) {
-		return *&t.Player{}, fmt.Errorf("Can't get this player based on rank given") 
+		return *&t.Player{}, "", fmt.Errorf("Can't get this player based on rank given") 
 	}
-	return players[0], nil
+	return players[0], edgeCaseRanking, nil
 }
 
 

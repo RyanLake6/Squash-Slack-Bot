@@ -22,18 +22,24 @@ func (c *Client) FindNextMatch() {
 			if errFromGetPlayerRanking == nil && errFromGetRecentMatchesByDate == nil {
 				if pastmatches[0].Player1 == playerName && pastmatches[0].Player1PrevPos > pastmatches[0].Player2PrevPos ||
 					pastmatches[0].Player2 == playerName && pastmatches[0].Player1PrevPos < pastmatches[0].Player2PrevPos {
-						playerToPlayNext, err := c.Database.GetPlayerBasedOnRanking(int(playerRanking.Position) + 1)
+						playerToPlayNext, edgeCaseRanking, err := c.Database.GetPlayerBasedOnRanking(int(playerRanking.Position) + 1)
 						if (err != nil) {
 							resp = err.Error()
+						} else if edgeCaseRanking != "" {
+							playerToPlayNext, _, _ = c.Database.GetPlayerBasedOnRanking(int(playerRanking.Position) - 1)
+							resp = edgeCaseRanking + playerToPlayNext.FirstName
 						} else {
 							resp = "You should play DOWN next against "  + playerToPlayNext.FirstName
 						}
 				} else {
-					playerToPlayNext, err := c.Database.GetPlayerBasedOnRanking(int(playerRanking.Position) - 1)
+					playerToPlayNext, edgeCaseRanking, err := c.Database.GetPlayerBasedOnRanking(int(playerRanking.Position) - 1)
 					if (err != nil) {
 						resp = err.Error()
+					} else if edgeCaseRanking != "" {
+						playerToPlayNext, _, _ = c.Database.GetPlayerBasedOnRanking(int(playerRanking.Position) + 1)
+						resp = edgeCaseRanking + playerToPlayNext.FirstName
 					} else {
-						resp = "You should play UP next against " + playerToPlayNext.FirstName
+						resp = "You should play UP next against " + playerToPlayNext.FirstName + edgeCaseRanking
 					}
 				}
 			}
