@@ -43,6 +43,7 @@ func (d *Database) GetRecentMatchesByDate(playerName string) ([]t.PastMatch, err
 	return pastmatches, nil
 }
 
+// Get a single players ranking
 func (d *Database) GetPlayerRanking(playerName string) (t.Player, error) {
 	rows, _ := d.Database.Query("SELECT * FROM rankings WHERE firstName='" + playerName + "'")
 	players := []t.Player{}
@@ -54,11 +55,12 @@ func (d *Database) GetPlayerRanking(playerName string) (t.Player, error) {
 	}
 
 	if (len(players) == 0) {
-		return *&t.Player{}, fmt.Errorf("Can't get ranking if there player doesn't exist in database")
+		return *&t.Player{}, fmt.Errorf("Can't get ranking if the player doesn't exist in database")
 	}
 	return players[0], nil
 }
 
+// Returns the player type based on the rank given
 func (d *Database) GetPlayerBasedOnRanking(rankingNumber int) (t.Player, string, error) {
 	// Checking if player is at top or bottom of ladder
 	ladder := d.RetreiveLadderFromDatabase()
@@ -112,30 +114,6 @@ func (d *Database) RecordMatch(winner int, player1 string, player2 string, playe
 		panic(err)
 	}
 }
-
-
-func (d *Database) GetPlayersRankings(player1 string, player2 string) (t.Player, t.Player) {
-	rows, _ := d.Database.Query("SELECT * FROM rankings WHERE firstName='" + player1 + "'")
-	players1 := []t.Player{}
-	defer rows.Close()
-	for rows.Next() {
-		var p t.Player
-		rows.Scan(&p.Position, &p.FirstName)
-		players1 = append(players1, p)
-	}
-
-	rows, _ = d.Database.Query("SELECT * FROM rankings WHERE firstName='" + player2 + "'")
-	defer rows.Close()
-	players2 := []t.Player{}
-	for rows.Next() {
-		var p t.Player
-		rows.Scan(&p.Position, &p.FirstName)
-		players2 = append(players2, p)
-	}
-
-	return players1[0], players2[0]
-}
-
 
 // Gets all the past matches of the player given
 func (d *Database) GetPastMatches(playerName string) []t.PastMatch {

@@ -25,7 +25,7 @@ func (c *Client) FindNextMatch() {
 						playerToPlayNext, edgeCaseRanking, err := c.Database.GetPlayerBasedOnRanking(int(playerRanking.Position) + 1)
 						if (err != nil) {
 							resp = err.Error()
-						} else if edgeCaseRanking != "" {
+						} else if edgeCaseRanking != "" { // For the case of the number 1 postion not able to challenge up
 							playerToPlayNext, _, _ = c.Database.GetPlayerBasedOnRanking(int(playerRanking.Position) - 1)
 							resp = edgeCaseRanking + playerToPlayNext.FirstName
 						} else {
@@ -35,7 +35,7 @@ func (c *Client) FindNextMatch() {
 					playerToPlayNext, edgeCaseRanking, err := c.Database.GetPlayerBasedOnRanking(int(playerRanking.Position) - 1)
 					if (err != nil) {
 						resp = err.Error()
-					} else if edgeCaseRanking != "" {
+					} else if edgeCaseRanking != "" { // For the case of the lowest player not able to challenge down
 						playerToPlayNext, _, _ = c.Database.GetPlayerBasedOnRanking(int(playerRanking.Position) + 1)
 						resp = edgeCaseRanking + playerToPlayNext.FirstName
 					} else {
