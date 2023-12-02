@@ -24,4 +24,7 @@ func (c *Client) CreateCommands() {
 
 	// Find next match player should play
 	c.CommandEvents.FindNextMatch()
+
+	// Manually alter the ladder (admin access only)
+	c.CommandEvents.AlterLadder()
 }
