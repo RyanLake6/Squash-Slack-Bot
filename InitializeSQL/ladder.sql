@@ -12,8 +12,7 @@ USE ladder;
 
 GRANT ALL PRIVILEGES ON ladder.* TO 'my_user'@'%';
 
-DROP TABLE IF EXISTS `pastmatches`;
-CREATE TABLE `pastmatches` (
+CREATE TABLE IF NOT EXISTS `pastmatches` (
   `player1` varchar(255) DEFAULT NULL,
   `player2` varchar(255) DEFAULT NULL,
   `winner` int DEFAULT NULL,
@@ -22,30 +21,15 @@ CREATE TABLE `pastmatches` (
   `date` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-DROP TABLE IF EXISTS `rankings`;
-CREATE TABLE `rankings` (
+CREATE TABLE IF NOT EXISTS `rankings` (
   `position` int DEFAULT NULL,
   `firstName` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-INSERT INTO `pastmatches` (`player1`, `player2`, `winner`, `player1PrevPos`, `player2PrevPos`, `date`) VALUES
-('ryan', 'charles', 2, 7, 6, '2023-01-21');
-INSERT INTO `pastmatches` (`player1`, `player2`, `winner`, `player1PrevPos`, `player2PrevPos`, `date`) VALUES
-('ian', 'alex', 1, 1, 2, '2023-01-24');
-INSERT INTO `pastmatches` (`player1`, `player2`, `winner`, `player1PrevPos`, `player2PrevPos`, `date`) VALUES
-('peter', 'vanel', 1, 12, 13, '2023-01-20');
-INSERT INTO `pastmatches` (`player1`, `player2`, `winner`, `player1PrevPos`, `player2PrevPos`, `date`) VALUES
-('harrison', 'peter', 1, 11, 12, '2023-01-25'),
-('alex', 'eli', 1, 2, 3, '2023-01-26'),
-('ian', 'alex', 1, 1, 2, '2023-01-26');
-
 INSERT INTO `rankings` (`position`, `firstName`) VALUES
-(1, 'ian');
-INSERT INTO `rankings` (`position`, `firstName`) VALUES
-(2, 'alex');
-INSERT INTO `rankings` (`position`, `firstName`) VALUES
-(3, 'eli');
-INSERT INTO `rankings` (`position`, `firstName`) VALUES
+(1, 'ian'),
+(2, 'alex'),
+(3, 'eli'),
 (4, 'sam'),
 (5, 'ben'),
 (6, 'charles'),

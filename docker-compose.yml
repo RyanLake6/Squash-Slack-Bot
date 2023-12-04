@@ -24,6 +24,7 @@ services:
     # mounting a data volume to make sure we don't lose data / initialize correctly
     volumes:
       - ./InitializeSQL:/docker-entrypoint-initdb.d
+      - db_data:/var/lib/mysql
 
   bot:
     container_name: "slack_bot"
@@ -45,4 +46,6 @@ services:
       - .:/app/
     stdin_open: true
     tty: true
-    # command: ["./wait-for-db.sh", "db", "3306", "--", "/squash/slack/bot"]
+
+volumes:
+  db_data:

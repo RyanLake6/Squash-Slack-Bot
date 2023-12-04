@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"strconv"
-	"time"
 
 	t "github.com/ryanlake6/squash-slack-bot/types"
 )
@@ -108,8 +107,8 @@ func (d *Database) RecordMatch(winner int, player1 string, player2 string, playe
 	winnerTemp := "'" + strconv.Itoa(winner) + "', "
 	player1PrevPosTemp := "'" + strconv.Itoa(player1PrevPos) + "', "
 	player2PrevPosTemp := "'" + strconv.Itoa(player2PrevPos) + "', "
-	currentTime := "'" + time.Now().Format(time.RFC3339) + "'"
-	_, err := d.Database.Exec("INSERT INTO pastmatches VALUES (" + player1Temp + player2Temp + winnerTemp + player1PrevPosTemp + player2PrevPosTemp + currentTime + ")")
+	// currentTime := "'" + time.Now().Format(time.RFC3339) + "'"
+	_, err := d.Database.Exec("INSERT INTO pastmatches VALUES (" + player1Temp + player2Temp + winnerTemp + player1PrevPosTemp + player2PrevPosTemp + "'2023-01-21'" + ")")
 	if err != nil {
 		panic(err)
 	}
